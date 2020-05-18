@@ -11,18 +11,18 @@ from operator import itemgetter
 
 import read_data
 
-def plot_chart(plot_type):
+def plot_chart(plot_type=None):
     #========================================================================================================
     # User-defined settings
     #========================================================================================================
 
     #Whether to save image or display. "directory_path" string is ignored if setting==False.
     save_image = {'setting': True,
-                  'directory_path': "full_directory_path_here"}
+                  'directory_path': "/Users/Steve/Desktop/UFlorida/3-Code/COVID/COVID-19"}
 
     #What to plot (confirmed, confirmed_normalized, deaths, recovered, active, daily)
     if plot_type==None:
-        plot_type = "deaths"
+        plot_type = "recovered"
 
     #Include Mainland China?
     mainland_china = True
@@ -75,8 +75,10 @@ def plot_chart(plot_type):
     max_value = 0; max_doubling = -6; min_doubling = 6
     lag_index = -lag_days - 1
     highlighted_series = []
-    top_rates = [{'rate':-20}]*5
     top_cases = [{'cases':0}]*5
+    top_neg_cases = [{'cases':0}]*5
+    top_rates = [{'rate':-20}]*10
+    top_neg_rates = [{'rate':20}]*10
     country_text_color = 'k'
 
     #Create figure
@@ -134,8 +136,22 @@ def plot_chart(plot_type):
                 }
                 ax.scatter(inverse_doubling_rate,end_day,**kwargs)
 
-            # Gather countries with top 5 cases
-            if end_day>top_cases[-1]['cases']:
+            # Gather countries with top 5 cases, but rate is negative.
+            if end_day>top_neg_cases[-1]['cases'] and inverse_doubling_rate<0:
+                label = {
+                        'rate':inverse_doubling_rate,
+                        'cases':end_day,
+                        'name':key.title()+' '
+                }
+                if label['name']==' Us' or label['name']==' Uk':
+                    label['name']=label['name'].upper()
+                top_neg_cases.insert(0,label)
+                top_neg_cases.pop(-1)
+                if len([i for i in top_neg_cases if i['cases']==0])==0:
+                    top_neg_cases = sorted(top_neg_cases, key=itemgetter('cases'),reverse=False)
+
+            # Gather countries with top 5 cases, but rate is positive.
+            if end_day>top_cases[-1]['cases'] and inverse_doubling_rate>0:
                 label = {
                         'rate':inverse_doubling_rate,
                         'cases':end_day,
@@ -149,7 +165,7 @@ def plot_chart(plot_type):
                     top_cases = sorted(top_cases, key=itemgetter('cases'),reverse=True)
 
             # Gather countries with top 5 doubling rates
-            if inverse_doubling_rate>top_rates[-1]['rate']:
+            if inverse_doubling_rate>top_rates[-1]['rate'] and end_day>100:
                 label = {
                         'rate':inverse_doubling_rate,
                         'cases':end_day,
@@ -162,6 +178,21 @@ def plot_chart(plot_type):
                 if len([i for i in top_rates if i['rate']==0])==0:
                     top_rates = sorted(top_rates, key=itemgetter('rate'),reverse=True)
 
+            # Gather countries with bottom 5 doubling rates (cases going down)
+            if inverse_doubling_rate<top_neg_rates[-1]['rate'] and end_day>100:
+                label = {
+                        'rate':inverse_doubling_rate,
+                        'cases':end_day,
+                        'name':key.title()+' '
+                }
+                if label['name']==' Us' or label['name']==' Uk':
+                    label['name']=label['name'].upper()
+                top_neg_rates.insert(0,label)
+                top_neg_rates.pop(-1)
+                if len([i for i in top_neg_rates if i['rate']==0])==0:
+                    top_neg_rates = sorted(top_neg_rates, key=itemgetter('rate'),reverse=False)
+
+            """
             #Label countries reducing totals
             if plot_type=='active' and doubling_rate <= 0:
                 name = key.title()+" "
@@ -173,6 +204,7 @@ def plot_chart(plot_type):
                         'fontsize':6
                 }
                 ax.text(inverse_doubling_rate,end_day,name,**kwargs)
+            """
 
             #Output stats to terminal
             print(f"{key.title()}\t{start_day}->{end_day}\t{doubling_rate:.2f}")
@@ -185,6 +217,7 @@ def plot_chart(plot_type):
 
     #Label countries with top 5 cases
     for case in top_cases: print(case)
+    for case in top_neg_cases: print(case)
     kwargs = {'zorder':7,
             'color':country_text_color,
             'ha':'left',
@@ -192,13 +225,25 @@ def plot_chart(plot_type):
             'family':'monospace',
             'fontsize':6
     }
+    neg_kwargs = {'zorder':7,
+            'color':country_text_color,
+            'ha':'right',
+            'va':'center',
+            'family':'monospace',
+            'fontsize':6
+    }
     for i in range(len(top_cases)):
         plt.text(top_cases[i]['rate'],top_cases[i]['cases'],top_cases[i]['name'],**kwargs)
+    if plot_type=='active':
+        for i in range(len(top_neg_cases)):
+            plt.text(top_neg_cases[i]['rate'],top_neg_cases[i]['cases'],top_neg_cases[i]['name'],**neg_kwargs)
 
     #Label countries with top 5 doubling rates
     for rate in top_rates: print(rate)
+    for rate in top_neg_rates: print(rate)
     for i in range(len(top_rates)):
         plt.text(top_rates[i]['rate'],top_rates[i]['cases'],top_rates[i]['name'],**kwargs)
+        if plot_type=='active': plt.text(top_neg_rates[i]['rate'],top_neg_rates[i]['cases'],top_neg_rates[i]['name'],**neg_kwargs)
 
     print(f"\nRange: {1/min_doubling:.2f} to {1/max_doubling:.2f} days")
 
@@ -221,6 +266,7 @@ def plot_chart(plot_type):
                     'ms':2
                     }
             plt.plot(highlighted_series_doubling_rate,highlighted_series[-len(highlighted_series_doubling_rate):],'-o',**kwargs)
+            #plt.plot(highlighted_series_doubling_rate,highlighted_series[-len(highlighted_series_doubling_rate):],'-o',lw=1,zorder=2,color=highlight_color,markevery=[-7],ms=2)
             hc_7 = True
         elif len(highlighted_series_doubling_rate)>1:
             kwargs = {'zorder':2,
@@ -228,6 +274,7 @@ def plot_chart(plot_type):
                     'lw':1
                     }
             plt.plot(highlighted_series_doubling_rate,highlighted_series[-len(highlighted_series_doubling_rate):],**kwargs)
+            #plt.plot(highlighted_series_doubling_rate,highlighted_series[-len(highlighted_series_doubling_rate):],lw=1,zorder=2,color=highlight_color)
             hc_7 = False
         else:
             hc_7 = False
@@ -255,6 +302,7 @@ def plot_chart(plot_type):
                 'color':total_raw_color
                 }
         plt.scatter(total_raw_inverse_doubling_rate,total_count_raw[-1],**kwargs)
+        #plt.scatter(total_raw_inverse_doubling_rate,total_count_raw[-1],zorder=6,color=total_raw_color)
 
         kwargs = {'zorder':3,
                 'lw':1,
@@ -263,6 +311,7 @@ def plot_chart(plot_type):
                 'ms':2
                 }
         plt.plot(total_raw_running_doubling_rate,total_count_raw[-len(total_raw_running_doubling_rate):],"-o",**kwargs)
+        #plt.plot(total_raw_running_doubling_rate,total_count_raw[-len(total_raw_running_doubling_rate):],"-o",lw=1,zorder=3,color=total_raw_color,markevery=[-7],ms=2)
 
         if mainland_china == True:
             total_doubling_rate = lag_days*np.log(2)/np.log(total_count[-1]/total_count[lag_index])
@@ -275,6 +324,7 @@ def plot_chart(plot_type):
                 'color':total_color
                 }
             plt.scatter(total_inverse_doubling_rate,total_count[-1],**kwargs)
+            #plt.scatter(total_inverse_doubling_rate,total_count[-1],zorder=6,color=total_color)
 
             kwargs = {'zorder':3,
                 'lw':1,
@@ -283,6 +333,7 @@ def plot_chart(plot_type):
                 'ms':2
                 }
             plt.plot(total_running_doubling_rate,total_count[-len(total_running_doubling_rate):],":o",**kwargs)
+            #plt.plot(total_running_doubling_rate,total_count[-len(total_running_doubling_rate):],":o",lw=1,zorder=3,color=total_color,markevery=[-7],ms=2)
 
         #Store values useful for the plot.
         max_value = max(max_value,total_count[-1])
