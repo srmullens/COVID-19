@@ -18,7 +18,7 @@ def plot_chart(plot_type):
 
     #Whether to save image or display. "directory_path" string is ignored if setting==False.
     save_image = {'setting': True,
-                  'directory_path': "/Users/Steve/Desktop/UFlorida/3-Code/COVID/COVID-19"}
+                  'directory_path': "full_directory_path_here"}
 
     #What to plot (confirmed, confirmed_normalized, deaths, recovered, active, daily)
     if plot_type==None:
@@ -221,7 +221,6 @@ def plot_chart(plot_type):
                     'ms':2
                     }
             plt.plot(highlighted_series_doubling_rate,highlighted_series[-len(highlighted_series_doubling_rate):],'-o',**kwargs)
-            #plt.plot(highlighted_series_doubling_rate,highlighted_series[-len(highlighted_series_doubling_rate):],'-o',lw=1,zorder=2,color=highlight_color,markevery=[-7],ms=2)
             hc_7 = True
         elif len(highlighted_series_doubling_rate)>1:
             kwargs = {'zorder':2,
@@ -229,7 +228,6 @@ def plot_chart(plot_type):
                     'lw':1
                     }
             plt.plot(highlighted_series_doubling_rate,highlighted_series[-len(highlighted_series_doubling_rate):],**kwargs)
-            #plt.plot(highlighted_series_doubling_rate,highlighted_series[-len(highlighted_series_doubling_rate):],lw=1,zorder=2,color=highlight_color)
             hc_7 = False
         else:
             hc_7 = False
@@ -257,7 +255,6 @@ def plot_chart(plot_type):
                 'color':total_raw_color
                 }
         plt.scatter(total_raw_inverse_doubling_rate,total_count_raw[-1],**kwargs)
-        #plt.scatter(total_raw_inverse_doubling_rate,total_count_raw[-1],zorder=6,color=total_raw_color)
 
         kwargs = {'zorder':3,
                 'lw':1,
@@ -266,7 +263,6 @@ def plot_chart(plot_type):
                 'ms':2
                 }
         plt.plot(total_raw_running_doubling_rate,total_count_raw[-len(total_raw_running_doubling_rate):],"-o",**kwargs)
-        #plt.plot(total_raw_running_doubling_rate,total_count_raw[-len(total_raw_running_doubling_rate):],"-o",lw=1,zorder=3,color=total_raw_color,markevery=[-7],ms=2)
 
         if mainland_china == True:
             total_doubling_rate = lag_days*np.log(2)/np.log(total_count[-1]/total_count[lag_index])
@@ -279,7 +275,6 @@ def plot_chart(plot_type):
                 'color':total_color
                 }
             plt.scatter(total_inverse_doubling_rate,total_count[-1],**kwargs)
-            #plt.scatter(total_inverse_doubling_rate,total_count[-1],zorder=6,color=total_color)
 
             kwargs = {'zorder':3,
                 'lw':1,
@@ -288,7 +283,6 @@ def plot_chart(plot_type):
                 'ms':2
                 }
             plt.plot(total_running_doubling_rate,total_count[-len(total_running_doubling_rate):],":o",**kwargs)
-            #plt.plot(total_running_doubling_rate,total_count[-len(total_running_doubling_rate):],":o",lw=1,zorder=3,color=total_color,markevery=[-7],ms=2)
 
         #Store values useful for the plot.
         max_value = max(max_value,total_count[-1])
