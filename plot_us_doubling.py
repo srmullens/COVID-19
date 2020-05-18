@@ -17,7 +17,7 @@ def plot_chart(plot_type=None):
 
     #Whether to save image or display. "directory_path" string is ignored if setting==False.
     save_image = {'setting': True,
-                  'directory_path': "/Users/Steve/Desktop/UFlorida/3-Code/COVID/COVID-19"}
+                  'directory_path': "full_directory_path_here"}
 
     #What to plot (confirmed, confirmed_normalized, deaths, recovered, active, daily)
     if plot_type==None:
@@ -25,9 +25,6 @@ def plot_chart(plot_type=None):
 
     #Include repatriated cases (e.g., cruises)?
     include_repatriated = False
-
-    #Exclude New York?
-    #exclude_new_york = True
 
     #Plot total numbers?
     plot_total = True
@@ -140,7 +137,6 @@ def plot_chart(plot_type=None):
                         'fontsize':8
                         }
                 ax.text(inverse_doubling_time,end_day,ST,**kwargs)
-                #ax.text(inverse_doubling_time,end_day,ST,color='k',ha='center',va='center',family='monospace',fontsize=8,zorder=6)
 
             #Output stats to terminal
             print(f"{key.title()}\t{start_day}->{end_day}\t{doubling_time:.2f}")
@@ -172,7 +168,6 @@ def plot_chart(plot_type=None):
                     'ms':2
                     }
             plt.plot(highlighted_series_doubling_time,highlighted_series[-len(highlighted_series_doubling_time):],'-o',**kwargs)
-            #plt.plot(highlighted_series_doubling_time,highlighted_series[-len(highlighted_series_doubling_time):],'-o',lw=1,zorder=2,color=highlight_color,markevery=[-7],ms=2)
             hc_7 = True
         elif len(highlighted_series_doubling_time)>1:
             kwargs = {'zorder':2,
@@ -180,7 +175,6 @@ def plot_chart(plot_type=None):
                     'lw':1
                     }
             plt.plot(highlighted_series_doubling_time,highlighted_series[-len(highlighted_series_doubling_time):],**kwargs)
-            #plt.plot(highlighted_series_doubling_time,highlighted_series[-len(highlighted_series_doubling_time):],lw=1,zorder=2,color=highlight_color)
             hc_7 = False
         else:
             hc_7 = False
@@ -214,7 +208,6 @@ def plot_chart(plot_type=None):
                 'ms':2
                 }
         plt.plot(total_running_doubling_time,total_count[-len(total_running_doubling_time):],"-o",**kwargs)
-        #plt.plot(total_running_doubling_time,total_count[-len(total_running_doubling_time):],"-o",lw=1,zorder=3,color=total_color,markevery=[-7],ms=2)
 
         #Store values useful for the plot.
         max_value = max(max_value,total_count[-1])
@@ -231,8 +224,6 @@ def plot_chart(plot_type=None):
         plt.plot([],[],'-o',color=highlight_color,label=f"{highlight_key} & trend after 100 cases\n     Time-{highlight_doubling} days, Total-{highlight_total}")
     if plot_total == True:
         plt.plot([],[],'-o',label=f'US Total & trend\n     Time-{total_doubling_title} days, Total-{int(total_count_title)}',color=total_color)
-        #if exclude_new_york == True:
-        #    plt.plot([],[],':o',label=f'US Total (no NY) & trend\n     Time-{total_doubling_title} days, Total-{int(total_count_title)}',color=total_color)
     ax.scatter([],[],color='white',label="Abbreviated States & Territories")
 
     dot_l = False
@@ -240,14 +231,6 @@ def plot_chart(plot_type=None):
         p_hc = plt.scatter([],[], color=highlight_color, s=2)
         if plot_total == True:
             p_tc = plt.scatter([],[],color=total_color, s=2)
-            """
-            if mainland_china == True:
-                #print("hc,tc,mc")
-                p_tc_raw = plt.scatter([],[], color=total_raw_color, s=2)
-                dot_h = [(p_hc,p_tc_raw,p_tc)]
-                dot_l = ["Small dots were 7 days ago"]
-            else:
-            """
             #print("hc,tc")
             dot_h = [(p_hc,p_tc)]
             dot_l = ["Small dots were 7 days ago"]
@@ -259,14 +242,6 @@ def plot_chart(plot_type=None):
     else:
         if plot_total == True:
             p_tc = plt.scatter([],[],color=total_color, s=2)
-            """
-            if mainland_china == True:
-                #print("tc,mc")
-                p_tc_raw = plt.scatter([],[],color=total_raw_color, s=2)
-                dot_h = [(p_tc_raw,p_tc)]
-                dot_l = ["Small dots were 7 days ago"]
-            else:
-            """
             #print("tc")
             dot_h = [(p_tc)]
             dot_l = ["Small dot was 7 days ago"]
