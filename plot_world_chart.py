@@ -137,7 +137,6 @@ def plot_chart(plot_type=None):
             kwargs['label']=f'Total-China ({int(total_count_row[-1])})'
             kwargs['color']='b'
             plt.plot(cases[key]['date'],total_count_row,':',**kwargs)
-            #plt.plot(cases[key]['date'],total_count_row,':',zorder=2,label=f'Total-China ({int(total_count_row[-1])})',color='b',linewidth=2)
         max_value = max(max_value,max(total_count))
 
     #Format x-ticks
@@ -153,8 +152,7 @@ def plot_chart(plot_type=None):
         'prop':{'size':8}
         }
     plt.legend(**kwargs).set_zorder(51)
-    #legend_title = f"Top {settings['number_of_countries']} locations plotted"
-    #plt.legend(loc=2,title=legend_title,prop={'size':8}).set_zorder(51)
+
 
     #Plot title
     title_string = {
