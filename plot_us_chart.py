@@ -16,7 +16,7 @@ def plot_chart(plot_type=None):
 
     #Whether to save image or display. "directory_path" string is ignored if setting==False.
     save_image = {'setting': True,
-                  'directory_path': "/Users/Steve/Desktop/UFlorida/3-Code/COVID/COVID-19"}
+                  'directory_path': "full_directory_path_here"}
 
     #What to plot (confirmed, deaths, recovered, active, daily)
     if plot_type==None:
