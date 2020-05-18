@@ -135,7 +135,6 @@ def plot_chart(plot_type=None):
             kwargs['label']=f'Total (+ Repatriated)\n({int(total_count_rp[-1])})'
             kwargs['color']='b'
             plt.plot(cases[key]['date'],total_count_rp,':',**kwargs)
-            #plt.plot(cases[key]['date'],total_count_rp,':',zorder=2,label=f'Total (+ Repatriated)\n({int(total_count_rp[-1])})',color='b',linewidth=2)
         max_value = max(max_value,max(total_count))
 
     #Format x-ticks
@@ -151,7 +150,6 @@ def plot_chart(plot_type=None):
         'prop':{'size':8}
         }
     plt.legend(**kwargs).set_zorder(51)
-    #plt.legend(loc=2,prop={'size':8},title=f"Top {lim+1} locations plotted")
 
     #Plot title
     title_string = {
