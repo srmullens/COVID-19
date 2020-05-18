@@ -16,7 +16,7 @@ When plotting the doubling rate of cases, deaths, or recoveries, the chart only 
 
 ![doubling rate of active worldwide COVID deaths](deaths_doubling_world.png)
 
-Features:
+#### Features:
 * Logarithmic y-axis has shortened labels.
 * The logarithmic y-axis adjusts automatically to the next order of magnitude as amounts increase.
 * The referenced vertical gridlines adusts automatically depending on the range of doubling rates in the data.
@@ -24,6 +24,10 @@ Features:
   * The 5 countries with the most cases.
   * The 10 countries with the highest doubling rates.
   * For active cases, the same as above, but for "halving rates."
+* US doubling rates show 2-letter state abbreviations instead of dots, with the following additions:
+  * DC = Washington D.C.
+  * VI = Virgin Islands
+  * PR = Puerto Rico
 
 ### Charts
 
